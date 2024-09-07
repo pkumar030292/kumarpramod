@@ -1,0 +1,39 @@
+
+configure terminal
+system date 09/02/2024
+system time 22:58:26
+hostname "PB-CHD-C01-MO-9010"
+system location "MOHALI SEC 65 C1"
+system router-id 10.125.4.9
+end
+
+configure terminal
+switch-config
+no global l3mtu 1518
+global l3mtu 9216
+global l3mtu 9192
+end
+
+config terminal
+interface loopback 1
+description MGMT_Lo1_A-1
+ip address 10.125.4.9 255.255.255.255
+end
+
+config terminal
+interface loopback 2
+description Service_Lo2_A-1
+ip address 10.125.6.9 255.255.255.255
+end
+
+config terminal
+interface loopback 3
+description MGMT_Lo3_A-4
+ip address 10.125.4.97 255.255.255.255
+end
+
+config terminal
+interface loopback 4
+description Service_Lo4_A-4
+ip address 10.125.6.97 255.255.255.255
+end

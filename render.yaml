@@ -1,0 +1,18 @@
+# Exported from Render on 2024-09-07T03:34:02Z
+services:
+- type: web
+  name: pramodkumar
+  runtime: python
+  repo: https://github.com/pkumar030292/pramodkumar
+  plan: free
+  envVars:
+  - key: ADMIN_PASSWORD
+    sync: false
+  - key: SECRET_KEY
+    sync: false
+  - key: FLASK_ENV
+    sync: false
+  region: oregon
+  buildCommand: pip install -r requirements.txt
+  startCommand: 'gunicorn wepage_app_n:app'
+version: "1"

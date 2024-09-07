@@ -1,0 +1,105 @@
+
+configure terminal
+router ospf
+router-id 10.125.4.10
+nsf ietf restart-support
+nsf ietf restart-interval 1800
+end
+
+configure terminal
+router ospf
+network 10.125.4.10 area 0.0.0.1
+end
+
+configure terminal
+router ospf
+network 10.125.6.10 area 0.0.0.1
+end
+
+configure terminal
+router ospf
+network 10.125.4.193 area 0.0.0.9
+end
+
+configure terminal
+router ospf
+network 10.125.6.193 area 0.0.0.9
+end
+
+configure terminal
+router ospf
+network 10.130.4.49 area 0.0.0.1
+end
+
+configure terminal
+VLAN 10
+ip ospf network point-to-point
+ip ospf hello-interval 30
+ip ospf dead-interval 1800
+ip ospf cost 1
+end
+
+configure terminal
+router ospf
+network 10.130.4.53 area 0.0.0.1
+end
+
+configure terminal
+VLAN 20
+ip ospf network point-to-point
+ip ospf hello-interval 30
+ip ospf dead-interval 1800
+ip ospf cost 1
+end
+
+configure terminal
+router ospf
+network 10.130.4.14 area 0.0.0.1
+end
+
+configure terminal
+VLAN 30
+ip ospf network point-to-point
+ip ospf hello-interval 30
+ip ospf dead-interval 1800
+ip ospf cost 1
+end
+
+configure terminal
+router ospf
+network 10.130.4.57 area 0.0.0.1
+end
+
+configure terminal
+VLAN 40
+ip ospf network point-to-point
+ip ospf hello-interval 30
+ip ospf dead-interval 1800
+ip ospf cost 1
+end
+
+configure terminal
+router ospf
+network 10.130.4.205 area 0.0.0.9
+end
+
+configure terminal
+VLAN 50
+ip ospf network point-to-point
+ip ospf hello-interval 30
+ip ospf dead-interval 1800
+ip ospf cost 10
+end
+
+configure terminal
+router ospf
+network 10.130.4.201 area 0.0.0.9
+end
+
+configure terminal
+VLAN 60
+ip ospf network point-to-point
+ip ospf hello-interval 30
+ip ospf dead-interval 1800
+ip ospf cost 10
+end

@@ -1,0 +1,84 @@
+config terminal
+route-map Deny_DCN deny 1
+match community comm-num 2222:10000
+exit
+route-map Deny_DCN deny 2
+match community comm-num 2222:10800
+exit
+route-map Deny_DCN deny 3
+match community comm-num 2222:11100
+exit
+route-map Deny_DCN deny 4
+match community comm-num 2222:11000
+exit
+route-map Deny_DCN deny 5
+match community comm-num 2222:10600
+exit
+route-map Deny_DCN deny 6
+match community comm-num 2222:10400
+exit
+route-map Deny_DCN deny 7
+match community comm-num 2222:10900
+exit
+route-map Deny_DCN deny 8
+match community comm-num 2222:10200
+exit
+route-map Deny_DCN deny 9
+match community comm-num 2222:10500
+exit
+route-map Deny_DCN deny 10
+match community comm-num 2222:10300
+exit
+route-map Deny_DCN deny 11
+match community comm-num 2222:10700
+exit
+route-map Deny_DCN deny 12
+match community comm-num 2222:11200
+exit
+route-map Deny_DCN deny 13
+match community comm-num 2222:11300
+exit
+end
+
+config terminal
+route-map Deny_LU
+match community comm-num 2222:2
+exit
+end
+
+config terminal
+route-map cont 1
+match destination ip 10.125.4.11 255.255.255.255
+set community comm-num 2222:10000
+exit
+route-map cont 2
+match destination ip 10.125.6.11 255.255.255.255
+set community comm-num 2222:2
+exit
+route-map cont 3
+match destination ip 10.125.4.33 255.255.255.255
+set community comm-num 2222:10200
+exit
+route-map cont 4
+match destination ip 10.125.6.33 255.255.255.255
+set community comm-num 2222:2
+exit
+end
+
+config terminal
+route-map NHS_Up 1
+match community comm-num 2222:10200
+set next-hop ip 10.125.4.11
+exit
+route-map NHS_Up 10
+exit
+end
+
+config terminal
+route-map NHS_Down_A2
+match community comm-num 2222:10200
+exit
+route-map NHS_Down_A2 10
+set next-hop ip 10.125.4.33
+exit
+end

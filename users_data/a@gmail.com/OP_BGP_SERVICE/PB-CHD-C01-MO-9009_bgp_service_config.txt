@@ -1,0 +1,68 @@
+
+configure terminal
+router bgp 65104
+nei 10.125.6.1 remote-as 65104
+nei 10.125.6.1 update-source 10.125.6.8
+nei 10.125.6.1 timers holdtime 2400
+address-family ipv4
+no nei 10.125.6.1 activate
+exit
+address-family vpnv4
+nei 10.125.6.1 activate
+exit
+address-family l2vpn
+nei 10.125.6.1 activate
+exit
+address-family ipv4-label-unicast
+nei 10.125.6.1 activate
+nei 10.125.6.1 route-map Deny_DCN in
+nei 10.125.6.1 route-reflector-client
+nei 10.125.6.1 next-hop-self
+exit
+end
+
+configure terminal
+router bgp 65104
+nei 10.125.6.4 remote-as 65104
+nei 10.125.6.4 update-source 10.125.6.8
+nei 10.125.6.4 timers holdtime 2400
+address-family ipv4
+no nei 10.125.6.4 activate
+exit
+address-family vpnv4
+nei 10.125.6.4 activate
+exit
+address-family l2vpn
+nei 10.125.6.4 activate
+exit
+address-family ipv4-label-unicast
+nei 10.125.6.4 activate
+nei 10.125.6.4 route-map Deny_DCN in
+nei 10.125.6.4 route-reflector-client
+nei 10.125.6.4 next-hop-self
+exit
+end
+
+configure terminal
+router bgp 65104
+nei 10.125.6.146 remote-as 65104
+nei 10.125.6.146 update-source 10.125.6.145
+nei 10.125.6.146 timers holdtime 2400
+address-family ipv4
+no nei 10.125.6.146 activate
+exit
+address-family vpnv4
+nei 10.125.6.146 activate
+nei 10.125.6.146 route-reflector-client
+exit
+address-family l2vpn
+nei 10.125.6.146 activate
+nei 10.125.6.146 route-reflector-client
+exit
+address-family ipv4-label-unicast
+nei 10.125.6.146 activate
+nei 10.125.6.146 route-reflector-client
+nei 10.125.6.146 next-hop-self
+nei 10.125.6.146 route-map Deny_DCN in
+exit
+end

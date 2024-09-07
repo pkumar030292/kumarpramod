@@ -1,0 +1,34 @@
+from flask import Flask, request, jsonify
+import paramiko
+
+app = Flask(__name__)
+
+@app.route('/relay', methods=['POST'])
+def relay():
+    # Get the command and router login details from the request
+    data = request.json
+    command = data.get('command')
+    router_ip = data.get('router_ip')
+    router_username = data.get('router_username')
+    router_password = data.get('router_password')
+
+    if not command or not router_ip or not router_username or not router_password:
+        return jsonify({'status': 'error', 'message': 'Command and router login details are required'}), 400
+
+    try:
+        # Connect to the router and send the command
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(router_ip, username=router_username, password=router_password)
+        stdin, stdout, stderr = ssh.exec_command(command)
+        error_message = stderr.read().decode()
+        ssh.close()
+
+        if error_message:
+            return jsonify({'status': 'error', 'message': error_message}), 500
+        return jsonify({'status': 'success', 'message': 'Command executed successfully!'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5001)  # Runs on port 5001

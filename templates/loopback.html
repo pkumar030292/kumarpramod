@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Site Configuration Generation</title>
+
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 4px solid black; }
+        th { padding: 8px; text-align: left; color:blue}
+        td { padding: 8px; text-align: left; color:green}
+        .hidden { display: none; }
+        /* Additional styling for the horizontal menu */
+        .menu-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: #f4f4f4;
+            padding: 10px 0;
+        }
+
+        .menu-container a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+
+        .menu-container a:hover {
+            background-color: #ddd;
+        }
+
+        .heading {
+            font-size: 1.5em;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        /* Styling for the file browser table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .directory {
+            cursor: pointer;
+        }
+
+        .file {
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        function toggleUserIdInput() {
+            var generationMode = document.getElementById('generation_mode').value;
+            var userIdInput = document.getElementById('user_id_input');
+            if (generationMode === 'single') {
+                userIdInput.style.display = 'block';
+            } else {
+                userIdInput.style.display = 'none';
+            }
+        }
+
+        function reloadPage() {
+            window.location.reload();
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Update heading based on the section
+            const heading = document.getElementById('main-heading');
+            if (heading) {
+                switch (sectionId) {
+                    case 'loopback':
+                        heading.textContent = 'LOOPBACK';
+                        break;
+                    case 'bgp':
+                        heading.textContent = 'BGP';
+                        break;
+                    case 'bgp-service':
+                        heading.textContent = 'BGP SERVICE';
+                        break;
+                    case 'ospf':
+                        heading.textContent = 'OSPF';
+                        break;
+                    case 'route-map':
+                        heading.textContent = 'ROUTE MAP';
+                        break;
+                    case 'rsvp':
+                        heading.textContent = 'RSVP';
+                        break;
+                    case 'wan':
+                        heading.textContent = 'WAN';
+                        break;
+                    default:
+                        heading.textContent = 'Welcome to the Configuration Page'; // Default heading
+                        break;
+                }
+            }
+
+            // Show the selected section
+            const sectionToShow = document.getElementById(sectionId);
+            if (sectionToShow) {
+                sectionToShow.style.display = 'block';
+            }
+        }
+
+        function loadDirectory(path = '') {
+            fetch(`/list?path=${encodeURIComponent(path)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('file-list').innerHTML = `<p>Error: ${data.error}</p>`;
+                        return;
+                    }
+
+                    const fileList = document.getElementById('file-list');
+                    fileList.innerHTML = '';
+
+                    // Create table
+                    const table = document.createElement('table');
+
+                    // Create table header
+                    const header = table.createTHead();
+                    const headerRow = header.insertRow();
+                    headerRow.insertCell().textContent = 'Name';
+                    headerRow.insertCell().textContent = 'Type';
+                    headerRow.insertCell().textContent = 'Last Modified';
+
+                    // Create table body
+                    const body = table.createTBody();
+
+                    // Display directories
+                    data.directories.forEach(dir => {
+                        const row = body.insertRow();
+                        row.insertCell().textContent = dir.name;
+                        row.insertCell().textContent = 'Directory';
+                        row.insertCell().textContent = ''; // Empty cell for modification date
+                        row.className = 'directory';
+                        row.onclick = () => loadDirectory(`${data.basePath ? data.basePath + '/' : ''}${dir.name}`);
+                    });
+
+                    // Display files
+                    data.files.forEach(file => {
+                        const row = body.insertRow();
+                        row.insertCell().textContent = file.name;
+                        row.insertCell().textContent = 'File';
+                        row.insertCell().textContent = file.modified;
+                        row.className = 'file';
+                        row.onclick = () => window.location.href = `/download/${encodeURIComponent(`${data.basePath ? data.basePath + '/' : ''}${file.name}`)}`;
+                    });
+
+                    fileList.appendChild(table);
+                });
+        }
+
+        // Load the initial directory (which is the base directory)
+        loadDirectory();
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Welcome To Router Configuration Generation Portal</h1>
+        <div style="display: flex; align-items: center;">
+            <p style="
+                font-family: Arial, sans-serif;
+                font-size: 0.7em;
+                color: #4A90E2; /* Blue color */
+                background-color: #F4F6F9; /* Light gray background */
+                padding: 1px;
+                border-radius: 5px;
+                border: 3px solid #4A90E2; /* Blue border */
+                width: fit-content;
+                margin: 0; /* Remove top and bottom margin */
+                text-align: right; /* Align text to the right */
+                margin-right: 10px; /* Add some space between the text and the button */
+            ">
+                Active User: <span style="font-weight: bold; color: #D0021B;">{{ user_id }}</span>
+            </p>
+            <a href="/logout" class="logout-button">Logout</a>
+        </div>
+    </header>
+
+    <!-- Horizontal Menu -->
+    <nav class="menu-container">
+        <a href="#" onclick="reloadPage()">HOME</a>
+    </nav>
+
+    <div class="form_container">
+        <div id="main-heading" class="heading">Congifuration Generation For Router</div>
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Form to upload loopback file -->
+        <form action="{{ url_for('upload_loopback') }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <label for="loopback_file">Upload Loopback File:</label>
+            <input type="file" id="loopback_file" name="loopback_file">
+            <button type="submit">Upload</button>
+        </form>
+
+        <!-- Form to generate configurations -->
+        <form action="{{ url_for('generate_configurations') }}" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <label for="generation_mode">Generate Loopback Configuration</label>
+            <select id="generation_mode" name="generation_mode" onchange="toggleUserIdInput()">
+                <option value="all">All Sites</option>
+                <option value="single">Single Site</option>
+            </select>
+
+            <!-- Conditionally displayed input for single site ID -->
+            <div id="user_id_input" style="display: none;">
+                <label for="single_user_id">SITE ID:</label>
+                <input type="text" id="single_user_id" name="single_user_id">
+            </div>
+            <button type="submit">Generate Loopback</button>
+        </form>
+
+
+
+        <!-- Form to OSPF generate configurations -->
+        <form action="{{ url_for('ospf_generate_configurations') }}" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <label for="generation_mode_ospf">Generate OSPF Configuration</label>
+            <select id="generation_mode_ospf" name="generation_mode_ospf" onchange="toggleUserIdInput1()">
+                <option value="all">All Sites</option>
+                <option value="single_ospf">Single Site</option>
+            </select>
+
+            <!--OSPF Conditionally displayed input for single site ID -->
+            <div id="user_id_input_ospf" style="display: none;">
+                <label for="single_user_id_ospf">SITE ID:</label>
+                <input type="text" id="single_user_id_ospf" name="single_user_id_ospf">
+            </div>
+
+            <button type="submit">Generate OSPF</button>
+        </form>
+        <script type="text/javascript">
+    function toggleUserIdInput1() {
+        var mode = document.getElementById('generation_mode_ospf').value;
+        var userIdInputDiv = document.getElementById('user_id_input_ospf');
+        if (mode === 'single_ospf') {
+            userIdInputDiv.style.display = 'block';
+        } else {
+            userIdInputDiv.style.display = 'none';
+        }
+    }
+
+    // Optionally, trigger the function on page load to ensure the correct display state
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleUserIdInput1();
+    });
+</script>
+
+
+
+
+        <!-- Form to BGP generate configurations -->
+        <form action="{{ url_for('bgp_generate_configurations') }}" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <label for="generation_mode_bgp">Generate BGP Configuration</label>
+            <select id="generation_mode_bgp" name="generation_mode_bgp" onchange="toggleUserIdInput2()">
+                <option value="all">All Sites</option>
+                <option value="single_bgp">Single Site</option>
+            </select>
+
+            <!--BGP Conditionally displayed input for single site ID -->
+            <div id="user_id_input_bgp" style="display: none;">
+                <label for="single_user_id_bgp">SITE ID:</label>
+                <input type="text" id="single_user_id_bgp" name="single_user_id_bgp">
+            </div>
+
+            <button type="submit">Generate BGP</button>
+        </form>
+        <script type="text/javascript">
+    function toggleUserIdInput2() {
+        var mode = document.getElementById('generation_mode_bgp').value;
+        var userIdInputDiv = document.getElementById('user_id_input_bgp');
+        if (mode === 'single_bgp') {
+            userIdInputDiv.style.display = 'block';
+        } else {
+            userIdInputDiv.style.display = 'none';
+        }
+    }
+
+    // Optionally, trigger the function on page load to ensure the correct display state
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleUserIdInput2();
+    });
+</script>
+
+
+    <!-- Form to ROUTE MAP generate configurations -->
+<form action="{{ url_for('route_map_generate_configurations') }}" method="post">
+    <input type="hidden" name="user_id" value="{{ user_id }}">
+    <div class="input-button-container">
+        <label for="asba_number">Enter ASBA (4 Digit):</label>
+        <input type="text" id="asba_number" name="asba_number">
+    </div>
+    <label for="generation_mode_route_map">Generate Route Map Configuration</label>
+    <select id="generation_mode_route_map" name="generation_mode_route_map" onchange="toggleUserIdInput3()">
+        <option value="all">All Sites</option>
+        <option value="single_route_map">Single Site</option>
+    </select>
+
+    <!--ROUTE MAP Conditionally displayed input for single site ID -->
+    <div id="user_id_input_route_map" style="display: none;">
+        <label for="site_id">SITE ID:</label>
+        <input type="text" id="site_id" name="site_id"> <!-- Changed name to site_id -->
+    </div>
+
+    <button type="submit">Generate Route MAP</button>
+</form>
+
+        <script type="text/javascript">
+    function toggleUserIdInput3() {
+        var mode = document.getElementById('generation_mode_route_map').value;
+        var userIdInputDiv = document.getElementById('user_id_input_route_map');
+        if (mode === 'single_route_map') {
+            userIdInputDiv.style.display = 'block';
+        } else {
+            userIdInputDiv.style.display = 'none';
+        }
+    }
+
+    // Optionally, trigger the function on page load to ensure the correct display state
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleUserIdInput3();
+    });
+</script>
+
+
+
+
+
+
+
+        <!-- Form to generate AREA_GENERATOR -->
+        <form action="{{ url_for('area_generate_configurations') }}" method="post">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <label for="area_number">Generate Agg. Area Configuration:</label>
+            <div class="input-button-container">
+                <input type="text" id="area_number" name="area_number">
+                <button type="submit">Generate Agg OSPF Area</button>
+            </div>
+        </form>
+
+        <h1>Generated Configuration</h1>
+            <button id="back-button" class="hidden" onclick="goBack()">Back</button>
+    <div id="file-list"></div>
+
+    <script>
+    let pathHistory = [];
+    let userId = "{{ user_id }}";  // Ensure user_id is passed to the template
+
+    function fetchDirectoryContents(path = '') {
+        fetch(`/list?user_id=${userId}&path=${encodeURIComponent(path)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('file-list').innerText = data.error;
+                    return;
+                }
+
+                // Update path history and show back button
+                if (pathHistory.length === 0 || pathHistory[pathHistory.length - 1] !== path) {
+                    pathHistory.push(path);
+                }
+                document.getElementById('back-button').classList.remove('hidden');
+
+                // Build the HTML for directory and file listing
+                let html = '<h2>Directories:</h2><ul>';
+                if (path) {
+                    const parentPath = path.substring(0, path.lastIndexOf('/', path.length - 2) + 1);
+                    html += `<li><a href="#" onclick="fetchDirectoryContents('${parentPath}')">..</a></li>`;
+                }
+                data.directories.forEach(dir => {
+                    html += `<li><a href="#" onclick="fetchDirectoryContents('${path}${dir.name}/')">${dir.name}</a></li>`;
+                });
+                html += '</ul><h2>Files:</h2><table><thead><tr><th>Name</th><th>Type</th><th>Last Modified</th><th>Action</th></tr></thead><tbody>';
+                data.files.forEach(file => {
+                    html += `
+                        <tr>
+                            <td>${file.name}</td>
+                            <td>${file.type}</td>
+                            <td>${file.modified}</td>
+                            <td><a href="/download/${encodeURIComponent(path + file.name)}?user_id=${userId}" download>Download</a></td>
+                        </tr>`;
+                });
+                html += '</tbody></table>';
+
+                document.getElementById('file-list').innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('file-list').innerText = 'Error fetching directory contents.';
+                console.error('Error:', error);
+            });
+    }
+
+    function goBack() {
+        if (pathHistory.length > 1) {
+            pathHistory.pop();  // Remove the current path
+            const previousPath = pathHistory.pop();  // Get the previous path
+            fetchDirectoryContents(previousPath);
+        } else {
+            // Handle the case where there is no previous path (e.g., at root directory)
+            document.getElementById('back-button').classList.add('hidden');
+        }
+    }
+
+    // Initialize by fetching the root directory
+    fetchDirectoryContents();
+    </script>
+        <!-- Sections to be shown/hidden -->
+        <div id="loopback" class="section" style="display: none;">
+            <!-- Content for LOOPBACK -->
+        </div>
+        <div id="bgp" class="section" style="display: none;">
+            <!-- Content for BGP -->
+        </div>
+        <div id="bgp-service" class="section" style="display: none;">
+            <!-- Content for BGP SERVICE -->
+        </div>
+        <div id="ospf" class="section" style="display: none;">
+            <!-- Content for OSPF -->
+        </div>
+        <div id="route-map" class="section" style="display: none;">
+            <!-- Content for ROUTE MAP -->
+        </div>
+        <div id="rsvp" class="section" style="display: none;">
+            <!-- Content for RSVP -->
+        </div>
+        <div id="wan" class="section" style="display: none;">
+            <!-- Content for WAN -->
+        </div>
+    </div>
+</body>
+</html>

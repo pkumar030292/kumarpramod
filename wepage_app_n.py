@@ -1,0 +1,459 @@
+import json
+import os
+import subprocess
+import sys
+from datetime import datetime
+
+# import bcrypt
+import pandas as pd
+import time
+from functools import wraps
+
+import logging
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory, abort, Response, \
+    session, jsonify, make_response
+from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file
+
+app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key')  # Use environment variable or a secure value
+FILE_PATH = 'users.xlsx'
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+# Load environment variables from .env file
+load_dotenv()
+def load_config():
+    with open('config.json') as config_file:
+        return json.load(config_file)
+config = load_config()
+
+def load_users():
+    try:
+        df = pd.read_excel(FILE_PATH)
+    except FileNotFoundError:
+        df = pd.DataFrame(columns=['first_name', 'mobile', 'email', 'username', 'password'])
+    return df
+
+def save_users(df):
+    df.to_excel(FILE_PATH, index=False)
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        password = request.form.get('password')
+        if password == config.get('ADMIN_PASSWORD'):
+            resp = make_response(redirect(url_for('signup')))
+            resp.set_cookie('admin_authenticated', 'true', max_age=60*1)  # Cookie valid for 5 minutes
+            return resp
+        else:
+            flash('Invalid password. Please try again.')
+            return redirect(url_for('admin_login'))
+    return render_template('admin_login.html')
+
+
+@app.route('/')
+def login():
+    return render_template('login.html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    resp = make_response(redirect(url_for('login')))
+    resp.set_cookie('admin_authenticated', '', expires=0)  # Delete the cookie
+    session.pop('user_id', None)  # Remove user from session
+    return resp
+@app.route('/login', methods=['POST'])
+def login_post():
+    username = request.form.get('username').strip()
+    password = request.form.get('password').strip()
+    users = load_users()
+    user = users[(users['username'] == username) & (users['password'] == password)]
+
+    if not user.empty:
+        email = user.iloc[0]['email']
+        return redirect(url_for('site', user_id=email))
+    else:
+        flash('Invalid credentials, please try again.')
+        return redirect(url_for('login'))
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.cookies.get('admin_authenticated') != 'true':
+        flash('You must be logged in as an admin to access this page.')
+        return redirect(url_for('admin_login'))
+
+    if request.method == 'POST':
+        admin_password = request.form.get('admin_password')
+        if admin_password != config.get('ADMIN_PASSWORD'):
+            flash('Invalid admin password. Please try again.')
+            return redirect(url_for('signup'))
+
+        first_name = request.form.get('first_name')
+        mobile = request.form.get('mobile')
+        email = request.form.get('email')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if new_password != confirm_password:
+            flash('Passwords do not match!')
+            return redirect(url_for('signup'))
+
+        users = load_users()
+        if not users[users['email'] == email].empty:
+            flash('User already exists with this email!')
+            return redirect(url_for('signup'))
+
+        new_user = pd.DataFrame({
+            'first_name': [first_name],
+            'mobile': [mobile],
+            'email': [email],
+            'username': [email],  # Using email as username
+            'password': [new_password]  # Store plain text password (not recommended)
+        })
+
+        users = pd.concat([users, new_user], ignore_index=True)
+        save_users(users)
+
+        user_dir = get_user_directory(email)
+        try:
+            os.makedirs(os.path.join(user_dir, 'IP_loopback'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_BGP'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_BGP_SERVICE'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_LOOPBACK'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_OSPF'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_Route_Map'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_RSVP'), exist_ok=True)
+            os.makedirs(os.path.join(user_dir, 'OP_WAN'), exist_ok=True)
+        except Exception as e:
+            flash(f'Error creating user directories: {e}')
+            return redirect(url_for('signup'))
+
+        flash('User created successfully! Please login.','success')
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
+
+
+def get_user_directory(email):
+    return os.path.join('users_data', email)
+
+def get_user_output_directory(email):
+    return os.path.join('users_data', email)
+
+@app.route('/help.txt')
+def serve_help_txt():
+    return send_from_directory('static', 'help.txt')
+
+@app.route('/upload_loopback', methods=['POST'])
+def upload_loopback():
+    email = request.form.get('user_id')
+    if 'loopback_file' not in request.files:
+        flash('No file part', 'danger')
+        return redirect(url_for('site', user_id=email))
+
+    file = request.files['loopback_file']
+    if file.filename == '':
+        flash('No selected file', 'danger')
+        return redirect(url_for('site', user_id=email))
+
+    if file:
+        filename = secure_filename(file.filename)
+        user_dir = get_user_directory(email)
+        loopback_dir = os.path.join(user_dir, 'IP_loopback')
+        file.save(os.path.join(loopback_dir, filename))
+        flash('Loopback file uploaded successfully!', 'success')
+        return redirect(url_for('site', user_id=email))
+
+@app.route('/generate_configurations', methods=['POST'])
+def generate_configurations():
+    user_id = request.form.get('user_id')
+    mode = request.form.get('generation_mode')
+
+    if mode not in ['all', 'single']:
+        flash('Invalid generation mode selected.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+
+    user_dir = get_user_directory(user_id)
+    input_file_path = os.path.join(user_dir, 'IP_loopback', 'loopback.csv')
+    output_dir = get_user_output_directory(user_id)
+
+    if not os.path.exists(input_file_path):
+        flash('Input file not found', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+
+    script_path = os.path.join(os.path.dirname(__file__), 'loopback_new.py')
+
+    # Prepare the command to run the script
+    command = [sys.executable, script_path, user_dir, output_dir, user_id, mode]
+    print("LOOPBACK", command)
+    if mode == 'single':
+        single_user_id = request.form.get('single_user_id')
+        if single_user_id:
+            command[4] = single_user_id  # Override user_id with single_user_id for 'single' mode
+        else:
+            flash('User ID must be provided for single site mode.', 'danger')
+            return redirect(url_for('site', user_id=user_id))
+
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        logging.info(f"Script output: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error generating configurations: {e.stderr}")
+        flash(f'An error occurred while generating configurations: {e.stderr}', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+
+    flash('Loopback Configurations generated successfully!', 'success')
+    return redirect(url_for('site', user_id=user_id))
+##@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@app.route('/ospf_generate_configurations', methods=['POST'])
+def ospf_generate_configurations():
+    user_id = request.form.get('user_id')
+    mode = request.form.get('generation_mode_ospf')
+
+    if mode not in ['all', 'single_ospf']:
+        flash('Invalid generation mode selected.', 'fail')
+        return redirect(url_for('site', user_id=user_id))
+
+    user_dir = get_user_directory(user_id)
+    input_file_path = os.path.join(user_dir, 'IP_loopback', 'loopback.csv')
+    output_dir = get_user_output_directory(user_id)
+
+    if not os.path.exists(input_file_path):
+        flash('Input file not found', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+
+    script_path = os.path.join(os.path.dirname(__file__), 'ospf_new.py')
+
+    # Prepare the command to run the script
+    command = [sys.executable, script_path, user_dir, output_dir, user_id, mode]
+    if mode == 'single_ospf':
+        single_user_id_ospf = request.form.get('single_user_id_ospf')
+        if single_user_id_ospf:
+            command[4] = single_user_id_ospf  # Override user_id with single_user_id for 'single' mode
+        else:
+            flash('User ID must be provided for single site file configuration.', 'danger')
+            return redirect(url_for('site', user_id=user_id))
+
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        logging.info(f"Script output: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error generating configurations: {e.stderr}")
+        flash(f'An error occurred while generating configurations: {e.stderr}', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+
+    flash('OSPF Configurations generated successfully!', 'success')
+    return redirect(url_for('site', user_id=user_id))
+
+@app.route('/bgp_generate_configurations', methods=['POST'])
+def bgp_generate_configurations():
+    user_id = request.form.get('user_id')
+    mode = request.form.get('generation_mode_bgp')
+    if mode not in ['all', 'single_bgp']:
+        flash('Invalid generation mode selected.', 'fail')
+        return redirect(url_for('site', user_id=user_id))
+    user_dir = get_user_directory(user_id)
+    input_file_path = os.path.join(user_dir, 'IP_loopback', 'loopback.csv')
+    output_dir = get_user_output_directory(user_id)
+    if not os.path.exists(input_file_path):
+        flash('Input file not found', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    script_path = os.path.join(os.path.dirname(__file__), 'bgp_new.py')
+    command = [sys.executable, script_path, user_dir, output_dir, user_id, mode]
+    if mode == 'single_bgp':
+        single_user_id_bgp = request.form.get('single_user_id_bgp')
+        if single_user_id_bgp:
+            command[4] = single_user_id_bgp  # Override user_id with single_user_id for 'single' mode
+        else:
+            flash('SITE ID must be provided for single site file configuration.', 'danger')
+            return redirect(url_for('site', user_id=user_id))
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        logging.info(f"Script output: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error generating configurations: {e.stderr}")
+        flash(f'An error occurred while generating configurations: {e.stderr}', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    flash('BGP Configurations generated successfully!', 'success')
+    return redirect(url_for('site', user_id=user_id))
+@app.route('/bgp_service_generate_configurations', methods=['POST'])
+def bgp_service_generate_configurations():
+    user_id = request.form.get('user_id')
+    mode = request.form.get('generation_mode_bgp_service')
+    if mode not in ['all', 'single_bgp_service']:
+        flash('Invalid generation mode selected.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    user_dir = get_user_directory(user_id)
+    input_file_path = os.path.join(user_dir, 'IP_loopback', 'loopback.csv')
+    output_dir = get_user_output_directory(user_id)
+    if not os.path.exists(input_file_path):
+        flash('Input file not found', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    script_path = os.path.join(os.path.dirname(__file__), 'service_bgp_new.py')
+    command = [sys.executable, script_path, user_dir, output_dir, user_id, mode]
+    if mode == 'single_bgp_service':
+        single_user_id_bgp_service = request.form.get('single_user_id_bgp_service')
+        if single_user_id_bgp_service:
+            command[4] = single_user_id_bgp_service  # Override user_id with single_user_id for 'single' mode
+        else:
+            flash('SITE ID must be provided for single site file configuration.', 'danger')
+            return redirect(url_for('site', user_id=user_id))
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        logging.info(f"Script output: {result.stdout}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error generating configurations: {e.stderr}")
+        flash(f'An error occurred while generating configurations: {e.stderr}', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    flash('BGP SERVICE Configurations generated successfully!', 'success')
+    return redirect(url_for('site', user_id=user_id))
+@app.route('/route_map_generate_configurations', methods=['POST'])
+def route_map_generate_configurations():
+    user_id = request.form.get('user_id')
+    mode = request.form.get('generation_mode_route_map')
+    asba_number = request.form.get('asba_number')
+    site_id = request.form.get('site_id')
+    if not user_id:
+        flash('User ID is required.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    if mode not in ['all', 'single_route_map']:
+        flash('Invalid generation mode selected.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    if not asba_number:
+        flash('ASBA Number must be provided.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    user_dir = get_user_directory(user_id)
+    input_dir = user_dir
+    output_dir = get_user_output_directory(user_id)
+    if not os.path.exists(os.path.join(input_dir, 'IP_loopback', 'loopback.csv')):
+        flash('Input file not found.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    script_path = os.path.join(os.path.dirname(__file__), 'route_map_new.py')
+    command = [sys.executable, script_path, input_dir, user_dir, output_dir, user_id, mode, asba_number]
+    if mode == 'single_route_map':
+        if not site_id:
+            flash('Site ID must be provided for single_route_map mode.', 'danger')
+            return redirect(url_for('site', user_id=user_id))
+        command.append(site_id)
+    logging.info(f"Executing command: {' '.join(command)}")
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        logging.info(f"Script output: {result.stdout}")
+        if result.stderr:
+            logging.error(f"Script error output: {result.stderr}")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Error generating route map configurations: {str(e.stderr)}")
+        flash(f'An error occurred while generating route map configurations: {str(e.stderr)}', 'danger')
+    except Exception as e:
+        logging.error(f"Unexpected error: {str(e)}")
+        flash(f'An unexpected error occurred: {str(e)}', 'danger')
+    else:
+        flash('Route map configurations generated successfully!', 'success')
+
+    return redirect(url_for('site', user_id=user_id))
+@app.route('/area_generate_configurations', methods=['POST'])
+def area_generate_configurations():
+    user_id = request.form.get('user_id')
+    print(user_id)
+    area_number = request.form.get('area_number')
+
+    user_dir = get_user_directory(user_id)
+    input_file_path = os.path.join(user_dir, 'IP_loopback', 'loopback.csv')
+    output_dir = get_user_output_directory(user_id)
+
+    if not os.path.exists(input_file_path):
+        flash('Input file not found','danger')
+        return redirect(url_for('site', user_id=user_id))
+    script_path = os.path.join(os.path.dirname(__file__), 'area_generator.py')
+    # Prepare the command to run the script
+    command = [sys.executable, script_path, user_dir, output_dir, user_id, area_number]
+    print("COMND IS PRINTING AREA NUMBER........",area_number)
+    if area_number:
+        command[4] = area_number
+    else:
+        flash('Agg. Area Number Must Be Provided For Configuration File Generation.', 'danger')
+        return redirect(url_for('site', user_id=user_id))
+    subprocess.run(command, check=True)
+    flash(
+        f'Configurations generated successfully for Agg. Area: {area_number}. Files is saved in "IP_loopback" Directory.\nDownload files before generating next file.\nOtherwise files will be override.',
+        'success')
+    return redirect(url_for('site', user_id=user_id))
+@app.route('/list')
+def list_directory():
+    user_id = request.args.get('user_id')  # Get user_id from query string
+    if not user_id:
+        return jsonify({'error': 'User ID is required'}), 400
+    user_directory = get_user_directory(user_id)
+    path = request.args.get('path', '')
+    full_path = os.path.join(user_directory, path)
+    print(f"User Directory: {user_directory}")
+    print(f"Full Path: {full_path}")
+    if not os.path.isdir(full_path):
+        return jsonify({'error': 'Invalid directory'}), 400
+    directories = []
+    files = []
+    try:
+        with os.scandir(full_path) as entries:
+            for entry in entries:
+                if entry.is_dir():
+                    directories.append({
+                        'name': entry.name,
+                        'type': 'directory'
+                    })
+                elif entry.is_file():
+                    file_info = {
+                        'name': entry.name,
+                        'type': 'file',
+                        'modified': datetime.fromtimestamp(entry.stat().st_mtime).strftime('%Y-%m-%d %H:%M:%S')
+                    }
+                    files.append(file_info)
+    except Exception as e:
+        print(f"Error reading directory: {e}")
+        return jsonify({'error': 'Error reading directory'}), 500
+
+    return jsonify({
+        'directories': directories,
+        'files': files,
+        'basePath': path
+    })
+
+@app.route('/download/<path:filename>')
+def download_file(filename):
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'User ID is required'}), 400
+    user_directory = get_user_directory(user_id)
+    safe_path = os.path.join(user_directory, filename)
+    if not os.path.isfile(safe_path):
+        return jsonify({'error': 'File not found'}), 404
+    try:
+        return send_from_directory(user_directory, filename, as_attachment=True)
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500
+
+@app.route('/site/<user_id>')
+def site(user_id, page='loopback'):
+    user_dir = get_user_directory(user_id)
+    output_dir = get_user_output_directory(user_id)
+
+    if page not in ['loopback', 'bgp']:
+        abort(404)  # or redirect to an error page
+
+    if not os.path.exists(output_dir):
+        generated_files = []
+    else:
+        generated_files = []
+        for filename in os.listdir(output_dir):
+            file_path = os.path.join(output_dir, filename)
+            modification_time = os.path.getmtime(file_path)
+            formatted_time = datetime.fromtimestamp(modification_time).strftime("%Y-%m-%d %H:%M:%S")
+            generated_files.append({'filename': filename, 'creation_time': formatted_time})
+
+    return render_template('index.html', user_id=user_id, generated_files=generated_files)
+
+if __name__ == '__main__':
+    app.run(debug=True)

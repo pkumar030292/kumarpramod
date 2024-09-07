@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Files in Directory: {{ directory }}</h1>
+        <a href="{{ url_for('site', user_id=user_id) }}">Back to Home</a>
+    </header>
+
+    <div class="container">
+        <h2>Files:</h2>
+        <ul>
+            {% for file in files %}
+                <li><a href="{{ url_for('download_file', filename=file, user_id=user_id) }}">{{ file }}</a></li>
+            {% else %}
+                <li>No files found.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

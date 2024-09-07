@@ -1,0 +1,21 @@
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.243
+redistribute connected route-map cont
+nei 10.125.4.241 remote-as 65104
+nei 10.125.4.241 update-source 10.125.4.243
+nei 10.125.4.241 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.241 activate
+nei 10.125.4.241 route-map Deny_LU in
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end

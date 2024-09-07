@@ -1,0 +1,39 @@
+
+configure terminal
+system date 08/31/2024
+system time 17:52:24
+hostname "PB-CHD-C01-MA-9008"
+system location "MANI MAJRA C1"
+system router-id 10.125.4.7
+end
+
+configure terminal
+switch-config
+no global l3mtu 1518
+global l3mtu 9216
+global l3mtu 9192
+end
+
+config terminal
+interface loopback 1
+description MGMT_Lo1_A-1
+ip address 10.125.4.7 255.255.255.255
+end
+
+config terminal
+interface loopback 2
+description Service_Lo2_A-1
+ip address 10.125.6.7 255.255.255.255
+end
+
+config terminal
+interface loopback 3
+description MGMT_Lo3_A-10
+ip address 10.125.4.209 255.255.255.255
+end
+
+config terminal
+interface loopback 4
+description Service_Lo4_A-10
+ip address 10.125.6.209 255.255.255.255
+end

@@ -1,0 +1,15 @@
+<h3>WELCOME TO ROUTER CONFIGURATION GENERATION PORTAL</h3>
+ <h5>1. INPUT FILES:</h5>
+    1. You need to upload two files 'loopback.csv' and 'WAN.csv', file names should not be changed.
+    2. To upload files, Click on 'Choose File' and select these two files and click 'OK'.
+    3. After clicking 'OK', Click on Upload button. Your files will be uploaded and success message will be shown.
+    4. If getting error, contact system admin.
+ <h5>2. Generate Loopback Configuration:</h5>
+
+    1. Make sure you have uploaded 'loopback.csv' and 'WAN.csv' file.
+    2. To generate configuration files for all site of 'loopback.csv' file, then select 'All Site' and click on 'Generate Loopback' button.
+       Generated files will be saved in 'OP_LOOPBACK' directory, which can be accessed from 'Directories:' section.
+       to download you have to click on particular files.
+    3. To generate configuration files for Single Site of 'loopback.csv' file, then select 'Single Site',Enter the 'SITE ID' and click on 'Generate Loopback' button.
+       Generated files will be saved in 'OP_LOOPBACK' directory you can check file's date and time of creation/modification , which can be accessed from 'Directories:' section.
+       to download you have to click on particular files.

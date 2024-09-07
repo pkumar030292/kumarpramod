@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGP Configuration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        // JavaScript to show/hide the single site ID input field based on the selected generation mode
+        function toggleSingleSiteId() {
+            var mode = document.getElementById('generation_mode').value;
+            var singleSiteIdDiv = document.getElementById('single_site_id_div');
+            if (mode === 'single') {
+                singleSiteIdDiv.style.display = 'block';
+            } else {
+                singleSiteIdDiv.style.display = 'none';
+            }
+        }
+    </script>
+    <script>
+        function toggleSingleSiteId() {
+            var mode = document.getElementById('generation_mode').value;
+            var singleSiteIdDiv = document.getElementById('single_site_id_div');
+            if (mode === 'single') {
+                singleSiteIdDiv.style.display = 'block';
+            } else {
+                singleSiteIdDiv.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h1>BGP Configuration for Site: {{ site_id }}</h1>
+         <!-- Button to switch to Loopback page -->
+        <a href="{{ url_for('site', site_id=site_id, page='loopback') }}" class="btn btn-secondary mb-3">Go to Loopback Configuration</a>
+        <!-- Form to generate configurations -->
+        <form action="{{ url_for('generate_bgp') }}" method="post">
+            <input type="hidden" name="site_id" value="{{ site_id }}">
+            <div class="form-group">
+                <label for="generation_mode">Generation Mode</label>
+                <select class="form-control" id="generation_mode" name="generation_mode" onchange="toggleSingleSiteId()">
+                    <option value="all">Generate for All Sites</option>
+                    <option value="single">Generate for Single Site</option>
+                </select>
+            </div>
+            <div class="form-group" id="single_site_id_div" style="display: none;">
+                <label for="single_site_id">Single Site ID</label>
+                <input type="text" class="form-control" id="single_site_id" name="single_site_id">
+            </div>
+            <button type="submit" class="btn btn-primary">Generate Configurations</button>
+        </form>
+
+        <!-- Display flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="alert {{ messages[0][0] == 'error' and 'alert-danger' or 'alert-success' }} mt-3">
+                    {{ messages[0][1] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- List of generated files -->
+        <h2 class="mt-5">Generated Files</h2>
+        <ul class="list-group">
+            {% if generated_files %}
+                {% for file in generated_files %}
+                    <li class="list-group-item">
+                        <a href="{{ url_for('download_bgp_file', filename=file.filename, site_id=site_id) }}">
+                            {{ file.filename }}
+                        </a> - {{ file.creation_time }}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">No files generated yet.</li>
+            {% endif %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup Page</title>
+    <link rel="stylesheet" href="/static/signup_style.css">
+    <script>
+        function showAlert(event) {
+            event.preventDefault(); // Prevent the form from submitting
+            alert('Please contact admin for signup.');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Back button -->
+        <a href="{{ url_for('login') }}" class="back-button">← Back</a> <!-- Using url_for to generate the URL -->
+
+        <div class="signup-box">
+            <h2>Signup</h2>
+            <form method="POST" action="{{ url_for('signup') }}">
+                <input type="text" name="first_name" placeholder="First Name" required>
+                <input type="text" name="mobile" placeholder="Mobile Number" required>
+                <input type="email" name="email" placeholder="Email ID" required>
+                <input type="password" name="new_password" placeholder="New Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <div>
+                    <label for="admin_password">Admin Password:</label>
+                    <input type="password" id="admin_password" name="admin_password" required>
+                </div>
+                <button type="submit">Signup</button>
+            </form>
+            <div class="messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+      {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
+        </div>
+    </div>
+</body>
+</html>

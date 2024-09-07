@@ -1,0 +1,191 @@
+import paramiko
+import os
+import requests
+from flask import Flask, request, render_template_string, redirect, url_for, flash, send_from_directory
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
+
+app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key')  # Use environment variable or fallback
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+# Path to the directory where the executable is located
+EXECUTABLE_DIR = os.getenv('EXECUTABLE_DIR', 'D:/pyPrograms/pyProject/Route_web_based_/dist')
+
+# Dummy user database
+users = {
+    'admin': generate_password_hash(os.getenv('ADMIN_PASSWORD', 'admin'))
+}
+
+
+class User(UserMixin):
+    def __init__(self, username):
+        self.id = username
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id in users:
+        return User(user_id)
+    return None
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if username in users and check_password_hash(users[username], password):
+            user = User(username)
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'error')
+
+    return render_template_string(login_form_html)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
+@app.route('/')
+@login_required
+def index():
+    return render_template_string(form_html)
+
+
+@app.route('/configure', methods=['POST'])
+@login_required
+def configure():
+    vlan_id = request.form['vlan']
+    interface_name = request.form['interface']
+    router_ip = request.form['router_ip']
+    router_username = request.form['router_username']
+    router_password = request.form['router_password']
+
+    # Read and modify the script template
+    script_path = 'script_template.txt'
+    try:
+        with open(script_path, 'r') as file:
+            script = file.read()
+
+        # Replace placeholders with user inputs
+        modified_script = script.format(vlan_id=vlan_id, interface_name=interface_name)
+
+        # Send the modified script to the remote server
+        relay_url = 'http://192.168.1.7:5001/relay'
+        response = requests.post(relay_url, json={
+            'command': modified_script,
+            'router_ip': router_ip,
+            'router_username': router_username,
+            'router_password': router_password
+        })
+
+        # Check response from the remote server
+        result = response.json()
+        if response.status_code == 200 and result.get('status') == 'success':
+            flash("Configuration applied successfully!", 'success')
+        else:
+            flash(f"Error: {result.get('message', 'Unknown error')}", 'error')
+
+    except Exception as e:
+        flash(f"An error occurred: {str(e)}", 'error')
+
+    return redirect(url_for('index'))
+
+
+@app.route('/download/<filename>')
+@login_required
+def download_file(filename):
+    if filename == 'relay_server.exe':
+        try:
+            return send_from_directory(EXECUTABLE_DIR, filename, as_attachment=True)
+        except Exception as e:
+            return f"Error: {str(e)}", 500
+    else:
+        return "File not found", 404
+
+
+form_html = """
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Router VLAN Configuration</title>
+    <script>
+      let timeout;
+      function resetTimer() {
+          clearTimeout(timeout);
+          timeout = setTimeout(function() {
+              window.location.href = '/logout';
+          }, 10 * 60 * 1000);
+      }
+      window.onload = resetTimer;
+      window.onmousemove = resetTimer;
+      window.onkeypress = resetTimer;
+    </script>
+  </head>
+  <body>
+    <h1>Configure VLAN</h1>
+    <form method="post" action="/configure">
+      <label for="vlan">VLAN ID:</label>
+      <input type="text" id="vlan" name="vlan" required><br><br>
+      <label for="interface">Interface Name:</label>
+      <input type="text" id="interface" name="interface" required><br><br>
+      <label for="router_ip">Router IP:</label>
+      <input type="text" id="router_ip" name="router_ip" required><br><br>
+      <label for="router_username">Router Username:</label>
+      <input type="text" id="router_username" name="router_username" required><br><br>
+      <label for="router_password">Router Password:</label>
+      <input type="password" id="router_password" name="router_password" required><br><br>
+      <input type="submit" value="Start">
+    </form>
+    <hr>
+    <h2>Download Relay Server</h2>
+    <p>Download the relay server executable file to run on your local machine:</p>
+    <a href="/download/relay_server.exe" download>Download Relay Server</a>
+    <hr>
+    <a href="/logout">Logout</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </body>
+</html>
+"""
+
+login_form_html = """
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <form method="post" action="/login">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required><br><br>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required><br><br>
+      <input type="submit" value="Login">
+    </form>
+  </body>
+</html>
+"""
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)

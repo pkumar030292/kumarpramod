@@ -1,0 +1,15 @@
+import socket
+
+def udp_server(port):
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_socket.bind(('0.0.0.0', port))
+    print(f"Listening for UDP packets on port {port}...")
+
+    while True:
+        data, addr = server_socket.recvfrom(2048)  # Buffer size
+        if data:
+            server_socket.sendto(data, addr)  # Echo the received data back
+
+if __name__ == "__main__":
+    port = 12345  # Ensure this matches the port used in the traffic generator
+    udp_server(port)

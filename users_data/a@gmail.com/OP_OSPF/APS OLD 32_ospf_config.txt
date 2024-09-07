@@ -1,0 +1,17 @@
+
+configure terminal
+router ospf
+router-id 10.125.4.39
+nsf ietf restart-support
+nsf ietf restart-interval 1800
+end
+
+configure terminal
+router ospf
+network 10.125.4.39 area 0.0.0.2
+end
+
+configure terminal
+router ospf
+network 10.125.6.39 area 0.0.0.2
+end

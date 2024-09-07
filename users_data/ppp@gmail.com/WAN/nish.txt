@@ -1,0 +1,104 @@
+from flask import Flask, render_template, request, redirect, url_for, flash
+import os
+import pandas as pd
+import time
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+# Load the Excel file
+FILE_PATH = 'users.xlsx'
+
+
+# Helper function to load users
+def load_users():
+    try:
+        df = pd.read_excel(FILE_PATH)
+    except FileNotFoundError:
+        df = pd.DataFrame(columns=['first_name', 'mobile', 'email', 'username', 'password'])
+    return df
+
+
+# Helper function to save users
+def save_users(df):
+    df.to_excel(FILE_PATH, index=False)
+
+
+@app.route('/')
+def login():
+    return render_template('login.html')
+
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    users = load_users()
+
+    # Check if the username and password match
+    user = users[(users['username'] == username) & (users['password'] == password)]
+
+    if not user.empty:
+        return redirect(url_for('site', site_id=''))
+    else:
+        flash('Invalid credentials, please try again.')
+        return redirect(url_for('login'))
+
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
+
+
+@app.route('/signup', methods=['POST'])
+def signup_post():
+    first_name = request.form.get('first_name')
+    mobile = request.form.get('mobile')
+    email = request.form.get('email')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+
+    if new_password != confirm_password:
+        flash('Passwords do not match!')
+        return redirect(url_for('signup'))
+
+    users = load_users()
+
+    # Check if the email already exists
+    if not users[users['email'] == email].empty:
+        flash('User already exists with this email!')
+        return redirect(url_for('signup'))
+
+    # Add the new user
+    new_user = pd.DataFrame({
+        'first_name': [first_name],
+        'mobile': [mobile],
+        'email': [email],
+        'username': [email],  # Username can be email for simplicity
+        'password': [new_password]
+    })
+
+    # Use pd.concat instead of append
+    users = pd.concat([users, new_user], ignore_index=True)
+    save_users(users)
+
+    # Create directories for the new user
+    user_dir = os.path.join('users_data', email)
+    os.makedirs(os.path.join(user_dir, 'loopback'), exist_ok=True)
+    os.makedirs(os.path.join(user_dir, 'WAN'), exist_ok=True)
+    os.makedirs(os.path.join(user_dir, 'outputs'), exist_ok=True)
+
+    flash('User created successfully! Please login.')
+    time.sleep(3)
+    return redirect(url_for('login'))
+
+
+
+@app.route('/site')
+def site():
+    return render_template('site.html')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

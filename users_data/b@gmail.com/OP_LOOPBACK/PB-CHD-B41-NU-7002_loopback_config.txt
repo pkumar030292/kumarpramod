@@ -1,0 +1,27 @@
+
+configure terminal
+system date 08/28/2024
+system time 22:43:30
+hostname "PB-CHD-B41-NU-7002"
+system location "NP BEDI B41"
+system router-id 10.125.4.38
+end
+
+configure terminal
+switch-config
+no global l3mtu 1518
+global l3mtu 9216
+global l3mtu 9192
+end
+
+config terminal
+interface loopback 1
+description MGMT_Lo1_A-2
+ip address 10.125.4.38 255.255.255.255
+end
+
+config terminal
+interface loopback 2
+description Service_Lo2_A-2
+ip address 10.125.6.38 255.255.255.255
+end

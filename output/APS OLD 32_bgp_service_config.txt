@@ -1,0 +1,20 @@
+
+configure terminal
+router bgp 65104
+nei 10.125.6.33 remote-as 65104
+nei 10.125.6.33 update-source 10.125.6.39
+nei 10.125.6.33 timers holdtime 2400
+address-family ipv4
+no nei 10.125.6.33 activate
+exit
+address-family vpnv4
+nei 10.125.6.33 activate
+exit
+address-family l2vpn
+nei 10.125.6.33 activate
+exit
+address-family ipv4-label-unicast
+nei 10.125.6.33 activate
+nei 10.125.6.33 route-map Deny_DCN in
+exit
+end

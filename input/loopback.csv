@@ -1,0 +1,52 @@
+S. No.,CNTX,Circle,BA,SITE ID,Site Name,Type of Node,ABR/Non-ABR,GW,Router ID,Area ID - 1,BGP Role - 1,Management IP - Loopback 1,Service IP - Loopback 2,Area ID - 2,BGP Role - 2,Management IP - Loopback 3,Service IP - Loopback 4,Area ID - 3,BGP Role - 3,Management IP - Loopback 5,Service IP - Loopback 6,Area ID - 4,BGP Role - 4,Management IP - Loopback 7,Service IP - Loopback 8,ASN
+1,North,Punjab Area,Chandigarh,PB-CHD-C01-CH-9003,"CHD SEC 17-I CNN
+C1
+",C01,Non-ABR,Yes,10.125.4.1,1,RR,10.125.4.1,10.125.6.1,,,,,,,,,,,,,65104
+2,North,Punjab Area,Chandigarh,PB-CHD-C01-CH-9005,CHD SEC 34 C1,C01,Non-ABR,,10.125.4.2,1,Client,10.125.4.100,10.125.6.2,,,,,,,,,,,,,65104
+3,North,Punjab Area,Chandigarh,PB-CHD-C01-CH-9007,CHD SEC 49-II C1,C01,Non-ABR,,10.125.4.3,1,Client,10.125.4.3,10.125.6.3,,,,,,,,,,,,,65104
+4,North,Punjab Area,Chandigarh,PB-CHD-C01-RA-9012,RAMDARBAR C1,C01,Non-ABR,Yes,10.125.4.4,1,RR,10.125.4.4,10.125.6.4,,,,,,,,,,,,,65104
+5,North,Punjab Area,Chandigarh,PB-CHD-C01-CH-9004,CHD SEC 17-II Tx C1,C01,ABR,,10.125.4.5,1,Client,10.125.4.5,10.125.6.5,8,RR,10.125.4.177,10.125.6.177,,,,,,,,,65104
+6,North,Punjab Area,Chandigarh,PB-CHD-C01-CH-9006,CHD SEC 49-I C1,C01,ABR,,10.125.4.6,1,Client,10.125.4.6,10.125.6.6,11,RR,10.125.4.225,10.125.6.225,,,,,,,,,65104
+7,North,Punjab Area,Chandigarh,PB-CHD-C01-MA-9008,MANI MAJRA C1,C01,ABR,,10.125.4.7,1,Client,10.125.4.7,10.125.6.7,10,RR,10.125.4.209,10.125.6.209,,,,,,,,,65104
+8,North,Punjab Area,Chandigarh,PB-CHD-C01-MO-9009,MOHALI PHASE IV C1,C01,ABR,,10.125.4.8,1,Client,10.125.4.8,10.125.6.8,6,RR,10.125.4.145,10.125.6.145,,,,,,,,,65104
+9,North,Punjab Area,Chandigarh,PB-CHD-C01-MO-9010,MOHALI SEC 65 C1,C01,ABR,,10.125.4.9,1,Client,10.125.4.9,10.125.6.9,4,RR,10.125.4.97,10.125.6.97,,,,,,,,,65104
+10,North,Punjab Area,Chandigarh,PB-CHD-C01-PC-9011,PKL SEC 5 C1,C01,ABR,,10.125.4.10,1,Client,10.125.4.10,10.125.6.10,9,RR,10.125.4.193,10.125.6.193,,,,,,,,,65104
+11,North,Punjab Area,Chandigarh,PB-CHD-C01-RO-9001,ROPAR CNN C1,C01,ABR,,10.125.4.11,1,Client,10.125.4.11,10.125.6.11,2,RR,10.125.4.33,10.125.6.33,,,,,,,,,65104
+12,North,Punjab Area,Chandigarh,PB-CHD-B42-CH-8006,MOHALI SEC 53 B42,B42,Non-ABR,,10.125.4.12,1,Client,10.125.4.12,10.125.6.12,,,,,,,,,,,,,65104
+13,North,Punjab Area,Chandigarh,PB-CHD-B42-RA-8005,RATWARA B42,B42,Non-ABR,,10.125.4.13,1,Client,10.125.4.13,10.125.6.13,,,,,,,,,,,,,65104
+14,North,Punjab Area,Chandigarh,PB-CHD-B42-KH-8004,KHARAR B42,B42,ABR,,10.125.4.14,1,Client,10.125.4.14,10.125.6.14,5,RR,10.125.4.129,10.125.6.129,,,,,,,,,65104
+15,North,Punjab Area,Chandigarh,PB-CHD-B42-MO-8003,MORINDA B42,B42,ABR,,10.125.4.15,1,Client,10.125.4.15,10.125.6.15,3,RR,10.125.4.65,10.125.6.65,,,,,,,,,65104
+16,North,Punjab Area,Chandigarh,PB-CHD-B41-CH-7004,CHAMKAUR SAHIB B41,B41,Non-ABR,,10.125.4.16,1,Client,10.125.4.16,10.125.6.16,,,,,,,,,,,,,65104
+17,North,Punjab Area,Chandigarh,PB-CHD-B41-CH-7005,CHD SEC 37 B41,B41,ABR,,10.125.4.17,1,Client,10.125.4.17,10.125.6.17,7,RR,10.125.4.161,10.125.6.161,,,,,,,,,65104
+18,North,Punjab Area,Chandigarh,PB-CHD-B41-PK-7007,PKL SEC 20 B41,B41,ABR,,10.125.4.18,1,Client,10.125.4.18,10.125.6.18,12,RR,10.125.4.241,10.125.6.241,,,,,,,,,65104
+19,North,Punjab Area,Chandigarh,PB-CHD-B41-ZI-7008,ZIRAKPUR B41,B41,ABR,,10.125.4.19,1,Client,10.125.4.19,10.125.6.19,13,RR,10.125.5.1,10.125.7.1,,,,,,,,,65104
+20,North,Punjab Area,Chandigarh,PB-CHD-C01-RO-9002,ROPAR TX C1,C01,Non-ABR,,10.125.4.34,2,Client,10.125.4.34,10.125.6.34,,,,,,,,,,,,,65104
+21,North,Punjab Area,Chandigarh,PB-CHD-B42-KI-8001,KPS B42,B42,Non-ABR,,10.125.4.35,2,Client,10.125.4.35,10.125.6.35,,,,,,,,,,,,,65104
+22,North,Punjab Area,Chandigarh,PB-CHD-B41-AN-7001,APS B41,B41,Non-ABR,,10.125.4.36,2,Client,10.125.4.36,10.125.6.36,,,,,,,,,,,,,65104
+23,North,Punjab Area,Chandigarh,PB-CHD-B41-NA-7003,NANGAL B41,B41,Non-ABR,,10.125.4.37,2,Client,10.125.4.37,10.125.6.37,,,,,,,,,,,,,65104
+24,North,Punjab Area,Chandigarh,PB-CHD-B41-NU-7002,NP BEDI B41,B41,Non-ABR,,10.125.4.38,2,Client,10.125.4.38,10.125.6.38,,,,,,,,,,,,,65104
+25,North,Punjab Area,Chandigarh,APS OLD 32,APS OLD 32,B32,Non-ABR,,10.125.4.39,2,Client,10.125.4.39,10.125.6.39,,,,,,,,,,,,,65104
+26,North,Punjab Area,Chandigarh,PB-CHD-B31-MP-5002,MP KOTHI B31,B31,Non-ABR,,10.125.4.40,2,Client,10.125.4.40,10.125.6.40,,,,,,,,,,,,,65104
+27,North,Punjab Area,Chandigarh,PB-CHD-B31-RO-5003,RTP B31,B31,Non-ABR,,10.125.4.41,2,Client,10.125.4.41,10.125.6.41,,,,,,,,,,,,,65104
+28,North,Punjab Area,Chandigarh,PB-CHD-B31-TA-5004,TAKHATGARH BAINS B31,B31,Non-ABR,,10.125.4.42,2,Client,10.125.4.42,10.125.6.42,,,,,,,,,,,,,65104
+29,North,Punjab Area,Chandigarh,PB-CHD-B42-KU-8002,KURALI B42,B42,Non-ABR,,10.125.4.66,3,Client,10.125.4.66,10.125.6.66,,,,,,,,,,,,,65104
+30,North,Punjab Area,Chandigarh,PB-CHD-B32-LU-6002,LUTHERI B32,B32,Non-ABR,,10.125.4.67,3,Client,10.125.4.67,10.125.6.67,,,,,,,,,,,,,65104
+31,North,Punjab Area,Chandigarh,PB-CHD-B32-SI-6003,SIALBAH B32,B32,Non-ABR,,10.125.4.68,3,Client,10.125.4.68,10.125.6.68,,,,,,,,,,,,,65104
+32,North,Punjab Area,Chandigarh,PB-CHD-B31-GH-5001,GHARUAN B31,B31,Non-ABR,,10.125.4.69,3,Client,10.125.4.69,10.125.6.69,,,,,,,,,,,,,65104
+33,North,Punjab Area,Chandigarh,PB-CHD-B41-MA-7006,MANAULI B41,B41,Non-ABR,,10.125.4.98,4,Client,10.125.4.98,10.125.6.98,,,,,,,,,,,,,65104
+34,North,Punjab Area,Chandigarh,PB-CHD-B31-SE-5011,DCO Sec 70 Mohali,B31,Non-ABR,,10.125.4.99,4,Client,10.125.4.99,10.125.6.99,,,,,,,,,,,,,65104
+35,North,Punjab Area,Chandigarh,PB-CHD-B31-ST-5012,SDC Mohali B31,B31,Non-ABR,,10.125.4.100,4,Client,10.125.4.100,10.125.6.100,,,,,,,,,,,,,65104
+36,North,Punjab Area,Chandigarh,PB-CHD-B31-BA-5005,BALONGI B31,B31,Non-ABR,,10.125.4.130,5,Client,10.125.4.130,10.125.6.130,,,,,,,,,,,,,65104
+37,North,Punjab Area,Chandigarh,PB-CHD-B31-LA-5008,LANDRAN B31,B31,Non-ABR,,10.125.4.131,5,Client,10.125.4.131,10.125.6.131,,,,,,,,,,,,,65104
+38,North,Punjab Area,Chandigarh,Sec 71 B31,Sec 71 B31,B31,Non-ABR,,10.125.4.146,6,Client,10.125.4.146,10.125.6.146,,,,,,,,,,,,,65104
+39,North,Punjab Area,Chandigarh,PB-CHD-B31-DH-5006,DHANAS B31,B31,Non-ABR,,10.125.4.162,7,Client,10.125.4.162,10.125.6.162,,,,,,,,,,,,,65104
+40,North,Punjab Area,Chandigarh,PB-CHD-B31-MA-5009,MALOYA B31,B31,Non-ABR,,10.125.4.163,7,Client,10.125.4.163,10.125.6.163,,,,,,,,,,,,,65104
+41,North,Punjab Area,Chandigarh,PB-CHD-B31-SE-5010,CHD SEC 4 B31,B31,Non-ABR,,10.125.4.178,8,Client,10.125.4.178,10.125.6.178,,,,,,,,,,,,,65104
+42,North,Punjab Area,Chandigarh,PB-CHD-B32-DC-6004,PKL DC OFFICE B32,B32,Non-ABR,,10.125.4.194,9,Client,10.125.4.194,10.125.6.194,,,,,,,,,,,,,65104
+43,North,Punjab Area,Chandigarh,PB-CHD-B32-SE-6008,PKL SEC 14 B32,B32,Non-ABR,,10.125.4.195,9,Client,10.125.4.195,10.125.6.195,,,,,,,,,,,,,65104
+44,North,Punjab Area,Chandigarh,PB-CHD-B32-MA-6007,Mansa Devi B32,B32,Non-ABR,,10.125.4.210,9,Client,10.125.4.210,10.125.6.210,,,,,,,,,,,,,65104
+45,North,Punjab Area,Chandigarh,PB-CHD-B31-IN-5007,AIRPORT B31,B31,Non-ABR,,10.125.4.226,11,Client,10.125.4.226,10.125.6.226,,,,,,,,,,,,,65104
+46,North,Punjab Area,Chandigarh,PB-CHD-B32-SE-6009,PKL SEC 25 B32,B32,Non-ABR,,10.125.4.242,12,Client,10.125.4.242,10.125.6.242,,,,,,,,,,,,,65104
+47,North,Punjab Area,Chandigarh,PB-CHD-B32-SE-6010,PKL SEC 7 B32,B32,Non-ABR,,10.125.4.243,12,Client,10.125.4.243,10.125.6.243,,,,,,,,,,,,,65104
+48,North,Punjab Area,Chandigarh,PB-CHD-B32-DE-6005,DERA BASSI B32,B32,Non-ABR,,10.125.5.2,13,Client,10.125.5.2,10.125.7.2,,,,,,,,,,,,,65104
+49,North,Punjab Area,Chandigarh,PB-CHD-B32-LA-6006,LALRU B32,B32,Non-ABR,,10.125.5.3,13,Client,10.125.5.3,10.125.7.3,,,,,,,,,,,,,65104

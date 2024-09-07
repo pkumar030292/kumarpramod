@@ -1,0 +1,60 @@
+config terminal
+route-map Deny_DCN deny 1
+match community comm-num 4444:10000
+exit
+route-map Deny_DCN deny 2
+match community comm-num 4444:10800
+exit
+route-map Deny_DCN deny 3
+match community comm-num 4444:11100
+exit
+route-map Deny_DCN deny 4
+match community comm-num 4444:11000
+exit
+route-map Deny_DCN deny 5
+match community comm-num 4444:10600
+exit
+route-map Deny_DCN deny 6
+match community comm-num 4444:10400
+exit
+route-map Deny_DCN deny 7
+match community comm-num 4444:10900
+exit
+route-map Deny_DCN deny 8
+match community comm-num 4444:10200
+exit
+route-map Deny_DCN deny 9
+match community comm-num 4444:10500
+exit
+route-map Deny_DCN deny 10
+match community comm-num 4444:10300
+exit
+route-map Deny_DCN deny 11
+match community comm-num 4444:10700
+exit
+route-map Deny_DCN deny 12
+match community comm-num 4444:11200
+exit
+route-map Deny_DCN deny 13
+match community comm-num 4444:11300
+exit
+end
+
+config terminal
+route-map Deny_LU
+match community comm-num 4444:2
+exit
+end
+
+config terminal
+route-map cont 1
+match destination ip 10.125.4.38 255.255.255.255
+set community comm-num 4444:10200
+exit
+route-map cont 2
+match destination ip 10.125.6.38 255.255.255.255
+set community comm-num 4444:2
+exit
+end
+
+end

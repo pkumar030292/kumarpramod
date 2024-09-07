@@ -1,0 +1,157 @@
+        /* Add this CSS to your existing style block */
+.form-container {
+    display: flex;
+    gap: 20px; /* Adjust the space between forms */
+}
+
+form {
+    display: inline-block;
+    vertical-align: top;
+    width: 300px; /* Adjust width as needed */
+}
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #d8d2c2;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 0;
+            border-radius: 8px 8px 0 0;
+            display: flex; /* Use flexbox for layout */
+            justify-content: space-between; /* Space out items to the edges */
+            align-items: center; /* Center items vertically */
+        }
+        h1 {
+            margin: 0;
+        }
+        h2 {
+            color: #00cc00;
+        }
+        form {
+            margin: 2px 2;
+        }
+        label {
+            display: block;
+            margin-bottom: 1px;
+
+        }
+        input[type="text"], input[type="file"], select {
+            width: 30%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #555;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        table {
+            width: 70%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: .5px solid #ddd;
+        }
+        th, td {
+            padding: 1px;
+            text-align: left;
+        }
+        th {
+            background: #333;
+            color: #fff;
+        }
+        .logout-button {
+            background: #dc3545; /* Red color */
+            border: none;
+            padding: 5px 14px;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 0.7em;
+            text-decoration: none;
+        }
+        .logout-button:hover {
+            background: #c82333; /* Darker red */
+        }
+/* Container for aligning input and button horizontally */
+.input-button-container {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    gap: 10px; /* Space between input and button */
+}
+
+/* Style for the input field */
+.input-button-container input[type="text"] {
+    width: 35px; /* Fixed width for a small input box */
+    flex: 0; /* Prevent the input from growing */
+    text-align: center; /* Center-align text in the input */
+    padding: 5px; /* Padding inside the input */
+    border: 1px solid #ddd; /* Border style */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+}
+
+/* Style for the button */
+.input-button-container button {
+    flex-shrink: 0; /* Prevent the button from shrinking */
+    padding: 5px 10px; /* Padding inside the button */
+    font-size: 14px; /* Font size */
+}
+
+.input-container {
+    margin-bottom: 15px; /* Space below the input container */
+}
+
+.input-wrapper {
+    display: inline-block; /* Allows the container to adjust based on content */
+}
+
+#asba_number {
+    width: 50px; /* Adjust width for a 4-digit entry */
+    text-align: center; /* Center-align text */
+    padding: 5px; /* Padding inside the input field */
+    border: 1px solid #ddd; /* Border style */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    font-family: Arial, sans-serif; /* Font family */
+}

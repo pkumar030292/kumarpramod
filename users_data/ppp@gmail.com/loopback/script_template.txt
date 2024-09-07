@@ -1,0 +1,7 @@
+configure terminal
+vlan {vlan_id}
+name VLAN_{vlan_id}
+exit
+interface {interface_name}
+switchport access vlan {vlan_id}
+exit

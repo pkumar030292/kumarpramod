@@ -1,0 +1,412 @@
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.2 remote-as 65104
+nei 10.125.4.2 update-source 10.125.4.1
+nei 10.125.4.2 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.2 activate
+nei 10.125.4.2 route-map Deny_LU in
+nei 10.125.4.2 route-map NHS_Gw out
+nei 10.125.4.2 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.3 remote-as 65104
+nei 10.125.4.3 update-source 10.125.4.1
+nei 10.125.4.3 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.3 activate
+nei 10.125.4.3 route-map Deny_LU in
+nei 10.125.4.3 route-map NHS_Gw out
+nei 10.125.4.3 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.5 remote-as 65104
+nei 10.125.4.5 update-source 10.125.4.1
+nei 10.125.4.5 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.5 activate
+nei 10.125.4.5 route-map Deny_LU in
+nei 10.125.4.5 route-map NHS_Gw out
+nei 10.125.4.5 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.6 remote-as 65104
+nei 10.125.4.6 update-source 10.125.4.1
+nei 10.125.4.6 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.6 activate
+nei 10.125.4.6 route-map Deny_LU in
+nei 10.125.4.6 route-map NHS_Gw out
+nei 10.125.4.6 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.7 remote-as 65104
+nei 10.125.4.7 update-source 10.125.4.1
+nei 10.125.4.7 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.7 activate
+nei 10.125.4.7 route-map Deny_LU in
+nei 10.125.4.7 route-map NHS_Gw out
+nei 10.125.4.7 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.8 remote-as 65104
+nei 10.125.4.8 update-source 10.125.4.1
+nei 10.125.4.8 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.8 activate
+nei 10.125.4.8 route-map Deny_LU in
+nei 10.125.4.8 route-map NHS_Gw out
+nei 10.125.4.8 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.9 remote-as 65104
+nei 10.125.4.9 update-source 10.125.4.1
+nei 10.125.4.9 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.9 activate
+nei 10.125.4.9 route-map Deny_LU in
+nei 10.125.4.9 route-map NHS_Gw out
+nei 10.125.4.9 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.10 remote-as 65104
+nei 10.125.4.10 update-source 10.125.4.1
+nei 10.125.4.10 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.10 activate
+nei 10.125.4.10 route-map Deny_LU in
+nei 10.125.4.10 route-map NHS_Gw out
+nei 10.125.4.10 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.11 remote-as 65104
+nei 10.125.4.11 update-source 10.125.4.1
+nei 10.125.4.11 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.11 activate
+nei 10.125.4.11 route-map Deny_LU in
+nei 10.125.4.11 route-map NHS_Gw out
+nei 10.125.4.11 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.12 remote-as 65104
+nei 10.125.4.12 update-source 10.125.4.1
+nei 10.125.4.12 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.12 activate
+nei 10.125.4.12 route-map Deny_LU in
+nei 10.125.4.12 route-map NHS_Gw out
+nei 10.125.4.12 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.13 remote-as 65104
+nei 10.125.4.13 update-source 10.125.4.1
+nei 10.125.4.13 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.13 activate
+nei 10.125.4.13 route-map Deny_LU in
+nei 10.125.4.13 route-map NHS_Gw out
+nei 10.125.4.13 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.14 remote-as 65104
+nei 10.125.4.14 update-source 10.125.4.1
+nei 10.125.4.14 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.14 activate
+nei 10.125.4.14 route-map Deny_LU in
+nei 10.125.4.14 route-map NHS_Gw out
+nei 10.125.4.14 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.15 remote-as 65104
+nei 10.125.4.15 update-source 10.125.4.1
+nei 10.125.4.15 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.15 activate
+nei 10.125.4.15 route-map Deny_LU in
+nei 10.125.4.15 route-map NHS_Gw out
+nei 10.125.4.15 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.16 remote-as 65104
+nei 10.125.4.16 update-source 10.125.4.1
+nei 10.125.4.16 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.16 activate
+nei 10.125.4.16 route-map Deny_LU in
+nei 10.125.4.16 route-map NHS_Gw out
+nei 10.125.4.16 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.17 remote-as 65104
+nei 10.125.4.17 update-source 10.125.4.1
+nei 10.125.4.17 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.17 activate
+nei 10.125.4.17 route-map Deny_LU in
+nei 10.125.4.17 route-map NHS_Gw out
+nei 10.125.4.17 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.18 remote-as 65104
+nei 10.125.4.18 update-source 10.125.4.1
+nei 10.125.4.18 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.18 activate
+nei 10.125.4.18 route-map Deny_LU in
+nei 10.125.4.18 route-map NHS_Gw out
+nei 10.125.4.18 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.19 remote-as 65104
+nei 10.125.4.19 update-source 10.125.4.1
+nei 10.125.4.19 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.19 activate
+nei 10.125.4.19 route-map Deny_LU in
+nei 10.125.4.19 route-map NHS_Gw out
+nei 10.125.4.19 route-reflector-client
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end
+
+configure terminal
+router bgp 65104
+bgp router-id 10.125.4.1
+redistribute connected route-map cont
+nei 10.125.4.4 remote-as 65104
+nei 10.125.4.4 update-source 10.125.4.1
+nei 10.125.4.4 timers holdtime 2400
+address-family ipv4
+nei 10.125.4.4 activate
+nei 10.125.4.4 route-map Deny_LU in
+exit
+address-family vpnv4
+exit
+address-family l2vpn
+exit
+address-family ipv4-label-unicast
+exit
+bgp graceful-restart restart-time 2100 stalepath-time 2160
+exit
+end

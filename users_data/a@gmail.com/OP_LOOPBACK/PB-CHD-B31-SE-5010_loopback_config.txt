@@ -1,0 +1,27 @@
+
+configure terminal
+system date 09/02/2024
+system time 22:58:26
+hostname "PB-CHD-B31-SE-5010"
+system location "CHD SEC 4 B31"
+system router-id 10.125.4.178
+end
+
+configure terminal
+switch-config
+no global l3mtu 1518
+global l3mtu 9216
+global l3mtu 9192
+end
+
+config terminal
+interface loopback 1
+description MGMT_Lo1_A-8
+ip address 10.125.4.178 255.255.255.255
+end
+
+config terminal
+interface loopback 2
+description Service_Lo2_A-8
+ip address 10.125.6.178 255.255.255.255
+end
