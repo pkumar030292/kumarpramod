@@ -3,7 +3,7 @@ services:
 - type: web
   name: pramodkumar
   runtime: python
-  repo: https://github.com/pkumar030292/pramodkumar
+  repo: https://github.com/pkumar030292/kumarpramod
   plan: free
   envVars:
   - key: ADMIN_PASSWORD
